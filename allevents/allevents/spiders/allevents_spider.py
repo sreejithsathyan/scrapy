@@ -5,7 +5,7 @@ from allevents.items import AlleventsItem
 class AlleventsSpiderSpider(scrapy.Spider):
     name = 'allevents_spider'
     allowed_domains = ['https://allevents.in']
-    start_urls = ['https://allevents.in/new%20delhi/train-the-trainer-workshop/2044484635787135']
+    start_urls = ['https://allevents.in/new%20delhi/train-the-trainer-workshop/2044484635787135', 'https://allevents.in/new%20delhi/the-hashtag-fest/141862696561758', 'https://allevents.in/new%20delhi/run-for-laadli-a-unique-half-marathon-by-delhi-police/1775805199104598']
 
     def parse(self, response):
         title = response.xpath('//h1[@class="overlay-h1"]//text()').extract()
@@ -20,6 +20,15 @@ class AlleventsSpiderSpider(scrapy.Spider):
 	#print folowers_count
 	event = response.xpath('//div[@class="detail"]//text()').extract()[10]
 	#print event_count
+	description = response.xpath('//div[@property="schema:description"]//text()').extract_first().lstrip()
+	#print description
+	#fetch latitude and longitude
+	from geopy.geocoders import Nominatim
+	geolocator = Nominatim()
+	location = geolocator.geocode(address)
+	#print(location.address)
+	print((location.latitude, location.longitude))
+
 	#Give the extracted content row wise
         output = {
 			"Title":title,
@@ -27,6 +36,7 @@ class AlleventsSpiderSpider(scrapy.Spider):
 			"Address":address,
 			"Organizer" :organizer,
 			"followers_count" :followers,
-			"event_count" :event
+			"event_count" :event,
+			"description" :description
 		}
 	yield output

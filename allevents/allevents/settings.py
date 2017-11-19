@@ -91,4 +91,4 @@ DOWNLOADER_MIDDLEWARES = {
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 #Export as CSV Feed
 FEED_FORMAT = "csv"
-FEED_URI = "reddit.csv"
+FEED_URI = "allevnt_content.csv"
