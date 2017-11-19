@@ -22,13 +22,6 @@ class AlleventsSpiderSpider(scrapy.Spider):
 	#print event_count
 	description = response.xpath('//div[@property="schema:description"]//text()').extract_first().lstrip()
 	#print description
-	#fetch latitude and longitude
-	from geopy.geocoders import Nominatim
-	geolocator = Nominatim()
-	location = geolocator.geocode(address)
-	#print(location.address)
-	print((location.latitude, location.longitude))
-
 	#Give the extracted content row wise
         output = {
 			"Title":title,
