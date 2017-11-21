@@ -1,12 +1,31 @@
 # -*- coding: utf-8 -*-
 import scrapy
-
 from allevents.items import AlleventsItem
+import requests
+response = requests.get("https://allevents.in/new%20delhi/all#")
+page=response.content
+def getURL(page):
+    	start_link = page.find("a href")
+    	if start_link == -1:
+        	return None, 0
+    	start_quote = page.find('"https://allevents.in/new%20delhi/', start_link)
+    	end_quote = page.find('"', start_quote + 1)
+    	url = page[start_quote + 1: end_quote]
+    	return url, end_quote
+list1=[]
+while True:
+    url, n = getURL(page)
+    page = page[n:]
+    if url != "https://allevents.in/new%20delhi/all":
+	list1.append(url)
+    else:
+        break
+#print len(list1)
+#print list1[:]
 class AlleventsSpiderSpider(scrapy.Spider):
     name = 'allevents_spider'
     allowed_domains = ['https://allevents.in']
-    start_urls = ['https://allevents.in/new%20delhi/train-the-trainer-workshop/2044484635787135', 'https://allevents.in/new%20delhi/the-science-and-art-of-happiness/80008919047353', 'https://allevents.in/new%20delhi/run-for-laadli-a-unique-half-marathon-by-delhi-police/1775805199104598', 'https://allevents.in/new%20delhi/jatin-das-artists-and-friends-over-50-years/80001297084653', 'https://allevents.in/new%20delhi/double-the-drinks-twice-the-fun-with-\xe2\x80\x9ccheers-to-hard-day-at-work\xe2\x80\x9d-in-dlf-cyberhub/80008258671451', 'https://allevents.in/new%20delhi/yes-art-can-\xe2\x80\x93-2017/148440299107703', 'https://allevents.in/new%20delhi/mr-and-miss-delhi-india-2018-online-form/80001618453281', 'https://allevents.in/new%20delhi/certified-digital-content-writer-course-cdcw-by-henry-harvin-education/80001732002677', 'https://allevents.in/new%20delhi/volunteering-opportunity-in-delhi/80002585405205']
-
+    start_urls = list1
     def parse(self, response):
         title = response.xpath('//h1[@class="overlay-h1"]//text()').extract()
 	#print title
