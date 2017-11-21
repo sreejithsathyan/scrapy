@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from allevents.items import AlleventsItem
-import requests
+#from scrapy.selector import HtmlXpathSelector
+#from scrapy.selector import selector
+from scrapy.http import Request
+"""import requests
 response = requests.get("https://allevents.in/new%20delhi/all#")
 page=response.content
 def getURL(page):
@@ -21,12 +24,36 @@ while True:
     else:
         break
 #print len(list1)
-#print list1[:]
+#print list1[:]"""
+
 class AlleventsSpiderSpider(scrapy.Spider):
     name = 'allevents_spider'
     allowed_domains = ['https://allevents.in']
-    start_urls = list1
+    #start_urls = list1
+    start_urls = ['https://allevents.in/new%20delhi/all#']
+
     def parse(self, response):
+	
+	for link in set(response.xpath('//a/@href').extract()):
+            #item = Links()
+            if len(link) > 1:
+                if link.startswith("https://allevents.in/new%20delhi/"):
+                    item = link
+		    print item[:]
+
+
+	"""item = []
+        for link in set(response.xpath('//a/@href').extract()):
+            #item = Links()
+            if len(link) > 1:
+                if link.startswith("https://allevents.in/new%20delhi/"):
+                    
+                    item = link
+		    #print item[:]
+		yield scrapy.Request(item,callback=self.parse_events)"""
+
+    def parse_events(self,response):
+	
         title = response.xpath('//h1[@class="overlay-h1"]//text()').extract()
 	#print title
 	time = response.xpath('//ul[@class="meta-list"]//text()').extract()[2].split('\t')[12]
