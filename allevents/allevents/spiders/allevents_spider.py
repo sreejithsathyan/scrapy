@@ -36,11 +36,12 @@ class AlleventsSpiderSpider(scrapy.Spider):
 	
 	for link in set(response.xpath('//a/@href').extract()):
             #item = Links()
-            if len(link) > 1:
+           if len(link) > 1:
                 if link.startswith("https://allevents.in/new%20delhi/"):
                     item = link
-		    print item[:]
-
+		   # print item[:]
+		for url in item:
+			yield Request(url, callback=self.parse_following_urls, dont_filter=True)
 
 	"""item = []
         for link in set(response.xpath('//a/@href').extract()):
@@ -52,7 +53,7 @@ class AlleventsSpiderSpider(scrapy.Spider):
 		    #print item[:]
 		yield scrapy.Request(item,callback=self.parse_events)"""
 
-    def parse_events(self,response):
+    def parse_following_urls(self,response):
 	
         title = response.xpath('//h1[@class="overlay-h1"]//text()').extract()
 	#print title
